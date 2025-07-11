@@ -1,26 +1,73 @@
+
 @import "tailwindcss";
+@import 'react-quill/dist/quill.snow.css';
+
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --Primary-Color: #1E329E;
+  --Secondary-Color: #F05023;
+  --Tertiary-Color: #000;
+  --Fourth-Color: #fff;
+  --Five-Color: #1CB82B;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --Primary-Color-Background: #fff;
+  --Secondary-Color-Background: #F5F5F5;
+  --Tertiary-Background: #CDFFD2;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* You can define dark theme overrides here */
   }
 }
 
+/* Global Body Styling */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+}
+
+/* Headings */
+h1 {
+  font-size: 40px;
+  line-height: 1.3em;
+  margin-bottom: 25px;
+}
+
+h2 {
+  font-size: 34px;
+  line-height: 1.3em;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 28px;
+  line-height: 1.3em;
+}
+
+h4 {
+  font-size: 22px;
+  line-height: 1.4em;
+}
+
+h5 {
+  font-size: 20px;
+  line-height: 1.4em;
+}
+
+h6 {
+  font-size: 18px;
+  line-height: 1.6em;
+}
+p{
+  line-height: 1.6em;
+  font-size: 17px;
+}
+.navbar_text_size{
+  font-size: 15px;
+  line-height: 1.6em;
+}
+
+.card-gradient-bg {
+  background: linear-gradient(180deg, rgba(232, 247, 255, 0.87) 15%, rgba(255, 255, 255, 1) 15%);
 }
