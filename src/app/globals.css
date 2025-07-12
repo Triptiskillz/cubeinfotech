@@ -1,7 +1,5 @@
 
 @import "tailwindcss";
-@import 'react-quill/dist/quill.snow.css';
-
 
 :root {
   --Primary-Color: #1E329E;
@@ -9,8 +7,6 @@
   --Tertiary-Color: #000;
   --Fourth-Color: #fff;
   --Five-Color: #1CB82B;
-
-
   --Primary-Color-Background: #fff;
   --Secondary-Color-Background: #F5F5F5;
   --Tertiary-Background: #CDFFD2;
@@ -18,56 +14,184 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* You can define dark theme overrides here */
+    --Primary-Color-Background: #1a1a1a;
+    --Secondary-Color-Background: #2d2d2d;
+    --Tertiary-Background: #1a3c34;
   }
 }
 
-/* Global Body Styling */
-body {
-
+/* Admin-specific styles */
+.blog-admin-form {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: var(--Primary-Color-Background);
+  padding: 24px;
 }
 
-/* Headings */
+@media (min-width: 768px) {
+  .blog-admin-form {
+    padding: 32px;
+  }
+}
+
+.blog-admin-list {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: var(--Primary-Color-Background);
+  position: sticky;
+  top: 16px;
+  height: calc(100vh - 32px);
+  width: 100%;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .blog-admin-list {
+    width: 320px;
+  }
+}
+
+.blog-admin-list-item:hover {
+  background-color: #f3f4f6;
+}
+
+.blog-admin-image-upload img {
+  width: 192px;
+  height: 192px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.blog-admin-editor {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--Primary-Color-Background);
+}
+
+.blog-admin-button {
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.blog-admin-button:hover {
+  opacity: 0.9;
+}
+
+.blog-admin-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blog-admin-file-input {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.blog-admin-file-input::-webkit-file-upload-button {
+  margin-right: 16px;
+  padding: 8px 24px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: var(--Primary-Color);
+  color: var(--Fourth-Color);
+  cursor: pointer;
+}
+
+.blog-admin-file-input::-webkit-file-upload-button:hover {
+  background-color: #16277e;
+}
+
+.blog-admin-file-input:disabled::-webkit-file-upload-button {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blog-admin-menu {
+  border-radius: 50%;
+  padding: 8px;
+  background-color: var(--Primary-Color);
+  color: var(--Fourth-Color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.blog-admin-menu:hover {
+  background-color: #16277e;
+}
+
+/* General styles */
+body {
+  background-color: var(--Secondary-Color-Background);
+  font-family: sans-serif;
+}
+
 h1 {
   font-size: 40px;
-  line-height: 1.3em;
-  margin-bottom: 25px;
+  line-height: 1.3;
+  margin-bottom: 24px;
+  font-weight: 700;
+  color: var(--Tertiary-Color);
 }
 
 h2 {
   font-size: 34px;
-  line-height: 1.3em;
+  line-height: 1.3;
   margin-bottom: 20px;
+  font-weight: 600;
+  color: var(--Tertiary-Color);
 }
 
 h3 {
   font-size: 28px;
-  line-height: 1.3em;
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--Tertiary-Color);
 }
 
 h4 {
   font-size: 22px;
-  line-height: 1.4em;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--Tertiary-Color);
 }
 
 h5 {
   font-size: 20px;
-  line-height: 1.4em;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--Tertiary-Color);
 }
 
 h6 {
   font-size: 18px;
-  line-height: 1.6em;
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--Tertiary-Color);
 }
-p{
-  line-height: 1.6em;
+
+p {
   font-size: 17px;
+  line-height: 1.6;
+  color: #374151;
 }
-.navbar_text_size{
+
+.navbar_text_size {
   font-size: 15px;
-  line-height: 1.6em;
+  line-height: 1.6;
+  color: var(--Tertiary-Color);
 }
 
 .card-gradient-bg {
-  background: linear-gradient(180deg, rgba(232, 247, 255, 0.87) 15%, rgba(255, 255, 255, 1) 15%);
+  background: linear-gradient(180deg, rgba(232, 247, 255, 0.87) 15%, var(--Primary-Color-Background) 15%);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
