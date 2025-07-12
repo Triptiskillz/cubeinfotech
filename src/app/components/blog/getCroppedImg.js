@@ -1,32 +1,38 @@
-/**
- * Utility to generate cropped image from canvas.
- * @param {string} imageSrc - Image data URL
- * @param {Object} pixelCrop - Cropped area in pixels
- * @returns {Promise<string>} Cropped image data URL
- */
-export default async function getCroppedImg(imageSrc, pixelCrop) {
-    const image = new Image();
-    image.src = imageSrc;
-    await new Promise((resolve) => {
-      image.onload = resolve;
-    });
-  
-    const canvas = document.createElement('canvas');
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
-    const ctx = canvas.getContext('2d');
-  
-    ctx.drawImage(
-      image,
-      pixelCrop.x,
-      pixelCrop.y,
-      pixelCrop.width,
-      pixelCrop.height,
-      0,
-      0,
-      pixelCrop.width,
-      pixelCrop.height
+export default async function getCroppedImg(imageSrc, croppedAreaPixels) {
+  const image = new Image();
+  image.src = imageSrc;
+  await new Promise((resolve) => (image.onload = resolve));
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = croppedAreaPixels.width;
+  canvas.height = croppedAreaPixels.height;
+
+  ctx.drawImage(
+    image,
+    croppedAreaPixels.x,
+    croppedAreaPixels.y,
+    croppedAreaPixels.width,
+    croppedAreaPixels.height,
+    0,
+    0,
+    croppedAreaPixels.width,
+    croppedAreaPixels.height
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error('Canvas is empty'));
+          return;
+        }
+        const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        resolve(file);
+      },
+      'image/jpeg',
+      0.8
     );
-  
-    return canvas.toDataURL('image/jpeg');
-  }
+  });
+}

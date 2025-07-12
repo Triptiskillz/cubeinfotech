@@ -1,175 +1,126 @@
 'use client';
 import { useState, useCallback } from 'react';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Slider, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Cropper from 'react-easy-crop';
-import { Box, Dialog, DialogActions, DialogContent, Slider, Typography, IconButton } from '@mui/material';
 import { Close, Fullscreen, FullscreenExit } from '@mui/icons-material';
 import getCroppedImg from './getCroppedImg';
 
-/**
- * Image cropper component using react-easy-crop.
- * @param {Object} props - Component props
- * @param {string} props.image - Image data URL
- * @param {Function} props.onCrop - Callback for cropped image
- * @param {Function} props.onCancel - Callback to close cropper
- * @returns {JSX.Element} Image cropper component
- */
-export default function ImageCropper({ image, onCrop, onCancel }) {
+export default function ImageCropper({ open, imageSrc, onCrop, onClose }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [aspect, setAspect] = useState(16 / 9);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  const onCropComplete = useCallback((_, croppedAreaPixels) => {
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
   const handleCrop = useCallback(async () => {
     try {
-      const croppedImage = await getCroppedImg(image, croppedAreaPixels);
+      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
       onCrop(croppedImage);
     } catch (error) {
-      console.error('Error cropping image:', error);
+      console.error('ImageCropper - Crop error:', error);
     }
-  }, [image, croppedAreaPixels, onCrop]);
+  }, [imageSrc, croppedAreaPixels, onCrop]);
 
-  const handleCancel = useCallback(() => {
-    onCancel();
-  }, [onCancel]);
+  const toggleFullScreen = useCallback(() => {
+    setIsFullScreen((prev) => !prev);
+  }, []);
+
+  const aspectRatios = [
+    { label: '16:9', value: 16 / 9 },
+    { label: '4:3', value: 4 / 3 },
+    { label: '1:1', value: 1 },
+    { label: 'Free', value: null },
+  ];
 
   return (
     <Dialog
-      open={!!image}
-      onClose={handleCancel}
-      maxWidth={isFullScreen ? false : 'lg'}
-      fullWidth
-      style={isFullScreen ? { margin: 0, width: '100%', height: '100%' } : { width: '80%', maxWidth: '1200px', height: '80%' }}
+      open={open}
+      onClose={onClose}
+      maxWidth={isFullScreen ? false : 'sm'}
+      fullWidth={!isFullScreen}
+      fullScreen={isFullScreen}
+      sx={{
+        '& .MuiDialog-paper': {
+          backgroundColor: 'var(--Primary-Color-Background)',
+          borderRadius: isFullScreen ? 0 : '8px',
+        },
+        '& .MuiDialogTitle-root': {
+          backgroundColor: 'var(--Primary-Color)',
+          color: 'var(--Fourth-Color)',
+          padding: '8px 16px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
+      }}
     >
-      <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: 'var(--Primary-Color)', color: 'var(--Fourth-Color)' }}>
-        <Typography variant="h6" style={{ fontWeight: 700 }}>Crop Image</Typography>
-        <Box style={{ display: 'flex', gap: '8px' }}>
-          <IconButton
-            onClick={() => setIsFullScreen(!isFullScreen)}
-            style={{ color: 'var(--Fourth-Color)' }}
-            className="blog-admin-button"
-            aria-label={isFullScreen ? 'Exit full screen' : 'Enter full screen'}
-          >
+      <DialogTitle>
+        Crop Image
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Aspect Ratio</InputLabel>
+            <Select
+              value={aspect}
+              label="Aspect Ratio"
+              onChange={(e) => setAspect(e.target.value === 'null' ? null : e.target.value)}
+            >
+              {aspectRatios.map((ratio) => (
+                <MenuItem key={ratio.label} value={ratio.value}>
+                  {ratio.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <IconButton onClick={toggleFullScreen} sx={{ color: 'var(--Fourth-Color)' }}>
             {isFullScreen ? <FullscreenExit /> : <Fullscreen />}
           </IconButton>
-          <IconButton
-            onClick={handleCancel}
-            style={{ color: 'var(--Fourth-Color)' }}
-            className="blog-admin-button"
-            aria-label="Close cropper"
-          >
+          <IconButton onClick={onClose} sx={{ color: 'var(--Fourth-Color)' }}>
             <Close />
           </IconButton>
         </Box>
-      </Box>
-      <DialogContent style={{ padding: 0 }}>
-        <Box style={{ position: 'relative', height: '60vh' }}>
-          <Cropper
-            image={image}
-            crop={crop}
-            zoom={zoom}
-            aspect={aspect}
-            onCropChange={setCrop}
-            onZoomChange={setZoom}
-            onCropComplete={onCropComplete}
-            restrictPosition={aspect === null ? false : true}
-            showGrid
-          />
-        </Box>
-        <Box style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Typography style={{ color: '#374151' }}>Zoom</Typography>
-          <Slider
-            value={zoom}
-            min={1}
-            max={3}
-            step={0.1}
-            onChange={(_, value) => setZoom(value)}
-            style={{ color: 'var(--Primary-Color)' }}
-          />
-          <Typography style={{ color: '#374151' }}>Aspect Ratio</Typography>
-          <Box style={{ display: 'flex', gap: '8px' }}>
-            <button
-              className="blog-admin-button"
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                backgroundColor: aspect === 16 / 9 ? 'var(--Primary-Color)' : '#e5e7eb',
-                color: aspect === 16 / 9 ? 'var(--Fourth-Color)' : '#374151',
-              }}
-              onClick={() => setAspect(16 / 9)}
-            >
-              16:9
-            </button>
-            <button
-              className="blog-admin-button"
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                backgroundColor: aspect === 4 / 3 ? 'var(--Primary-Color)' : '#e5e7eb',
-                color: aspect === 4 / 3 ? 'var(--Fourth-Color)' : '#374151',
-              }}
-              onClick={() => setAspect(4 / 3)}
-            >
-              4:3
-            </button>
-            <button
-              className="blog-admin-button"
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                backgroundColor: aspect === 1 / 1 ? 'var(--Primary-Color)' : '#e5e7eb',
-                color: aspect === 1 / 1 ? 'var(--Fourth-Color)' : '#374151',
-              }}
-              onClick={() => setAspect(1 / 1)}
-            >
-              1:1
-            </button>
-            <button
-              className="blog-admin-button"
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                backgroundColor: aspect === null ? 'var(--Primary-Color)' : '#e5e7eb',
-                color: aspect === null ? 'var(--Fourth-Color)' : '#374151',
-              }}
-              onClick={() => setAspect(null)}
-            >
-              Free
-            </button>
+      </DialogTitle>
+      <DialogContent>
+        {imageSrc && (
+          <Box sx={{ position: 'relative', width: '100%', height: isFullScreen ? '80vh' : 300, my: 2 }}>
+            <Cropper
+              image={imageSrc}
+              crop={crop}
+              zoom={zoom}
+              aspect={aspect}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+              restrictPosition={false} // Allows free-form cropping when aspect is null
+              cropShape="rect"
+              showGrid={true}
+            />
           </Box>
-        </Box>
+        )}
+        <Slider
+          value={zoom}
+          min={1}
+          max={3}
+          step={0.1}
+          onChange={(e, value) => setZoom(value)}
+          aria-labelledby="Zoom"
+          sx={{ mt: 2 }}
+        />
       </DialogContent>
-      <DialogActions style={{ padding: '16px' }}>
-        <button
-          onClick={handleCancel}
-          className="blog-admin-button"
-          style={{
-            backgroundColor: 'var(--Secondary-Color)',
-            color: 'var(--Fourth-Color)',
-            borderRadius: '8px',
-            padding: '8px 24px',
-            fontWeight: 600,
-          }}
-        >
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleCrop}
-          className="blog-admin-button"
-          style={{
-            backgroundColor: 'var(--Primary-Color)',
-            color: 'var(--Fourth-Color)',
-            borderRadius: '8px',
-            padding: '8px 24px',
-            fontWeight: 600,
-          }}
+          variant="contained"
+          sx={{ backgroundColor: 'var(--Primary-Color)', color: 'var(--Fourth-Color)' }}
         >
           Crop
-        </button>
+        </Button>
       </DialogActions>
     </Dialog>
   );

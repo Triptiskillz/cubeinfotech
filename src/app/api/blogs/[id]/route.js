@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import Blog from '@/lib/models/Blog';
 import { connectDB } from '@/lib/db';
-import fs from 'fs/promises';
-import path from 'path';
 
 /**
  * Update a blog post.
@@ -14,7 +12,7 @@ import path from 'path';
 export async function PUT(request, { params }) {
   try {
     await connectDB();
-    const { id } = await params; // Await params
+    const { id } = await params;
 
     // Validate ID
     if (!mongoose.isValidObjectId(id)) {
@@ -22,36 +20,20 @@ export async function PUT(request, { params }) {
     }
 
     const data = await request.json();
+    const { featuredImage } = data;
 
-    // Handle featuredImage Data URL
-    let featuredImagePath = data.featuredImage;
-    if (featuredImagePath && featuredImagePath.startsWith('data:image/')) {
-      const matches = featuredImagePath.match(/^data:image\/([a-z]+);base64,/);
-      if (!matches) {
-        return NextResponse.json({ message: 'Invalid image format' }, { status: 400 });
-      }
-      const ext = matches[1];
-      if (!['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
-        return NextResponse.json({ message: 'Unsupported image format. Use jpg, jpeg, png, or gif.' }, { status: 400 });
-      }
-
-      const base64Data = featuredImagePath.replace(/^data:image\/\w+;base64,/, '');
-      const buffer = Buffer.from(base64Data, 'base64');
-      const fileName = `${Date.now()}.${ext}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'Uploads');
-      const filePath = path.join(uploadDir, fileName);
-
-      await fs.mkdir(uploadDir, { recursive: true });
-      await fs.writeFile(filePath, buffer);
-
-      featuredImagePath = `/Uploads/${fileName}`;
+    if (featuredImage && !/^\/uploads\/.+\.(jpg|jpeg|png|gif)$/.test(featuredImage)) {
+      return NextResponse.json(
+        { message: 'Invalid image path. Must be in /Uploads/ and have a valid extension (jpg, jpeg, png, gif)' },
+        { status: 400 }
+      );
     }
 
     const allowedFields = {
       title: data.title,
       slug: data.slug,
       content: data.content,
-      featuredImage: featuredImagePath,
+      featuredImage,
       metaTitle: data.metaTitle,
       metaDescription: data.metaDescription,
       isActive: data.isActive,
@@ -65,6 +47,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({ message: 'Blog updated successfully', blog });
   } catch (error) {
+    console.error('PUT /api/blogs/[id] - Error:', error.message, error.stack);
     if (error instanceof mongoose.Error.ValidationError) {
       return NextResponse.json({ message: 'Validation error', errors: error.errors }, { status: 400 });
     }
@@ -84,7 +67,7 @@ export async function PUT(request, { params }) {
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    const { id } = await params; // Await params
+    const { id } = await params;
 
     if (!mongoose.isValidObjectId(id)) {
       return NextResponse.json({ message: 'Invalid blog ID' }, { status: 400 });
@@ -98,6 +81,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({ blog });
   } catch (error) {
+    console.error('GET /api/blogs/[id] - Error:', error.message, error.stack);
     return NextResponse.json({ message: 'Failed to fetch blog', error: error.message }, { status: 500 });
   }
 }
