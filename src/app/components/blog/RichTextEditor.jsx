@@ -53,11 +53,11 @@ const RichTextEditor = forwardRef(({ control, name, label, defaultValue = '' }, 
           <ReactQuill
             theme="snow"
             value={value}
-            onChange={debounce(onChange, 300)}
+            onChange={debounce(onChange, 50)}
             modules={modules}
             formats={formats}
             style={{
-              height: isMobile ? '300px' : '400px',
+              height: isMobile ? '200px' : '300px',
               marginBottom: isMobile ? '40px' : '60px',
             }}
           />

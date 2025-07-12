@@ -1,0 +1,198 @@
+
+.blogForm {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  background-color: var(--Primary-Color-Background, #fff) !important;
+  padding: 24px !important;
+  max-width:1200px !important;
+  margin: 0 auto !important;
+}
+
+.header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+}
+
+.headerContent {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+
+.headerTitle {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: var(--Primary-Color, #1e3a8a) !important;
+  max-width: 400px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.headerActions {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.viewButton {
+  color: var(--Primary-Color, #1e3a8a) !important;
+  border-color: var(--Primary-Color, #1e3a8a) !important;
+}
+
+.createButton {
+  background-color: var(--Primary-Color, #1e3a8a) !important;
+  color: var(--Fourth-Color, #fff) !important;
+}
+
+.statusCheckbox {
+  margin: 0 !important;
+}
+
+.imageManager {
+  margin: 16px 0 !important;
+}
+
+.preview {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  align-items: flex-start !important;
+}
+
+.imageContainer {
+  position: relative !important;
+  width: 192px !important;
+  height: 192px !important;
+}
+
+.image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.cropButton {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  background-color: rgba(255, 107, 9, 0.8) !important;
+  color: var(--Fourth-Color, #fff) !important;
+  border: 2px solid var(--Fourth-Color, #fff) !important;
+  padding: 4px !important;
+}
+
+.popupCropButton {
+  background-color: var(--Primary-Color, #1e3a8a) !important;
+  color: var(--Fourth-Color, #fff) !important;
+}
+
+.noImage {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 16px !important;
+  border: 2px dashed #d1d5db !important;
+  border-radius: 8px !important;
+  background-color: #f9fafb !important;
+}
+
+.placeholderImage {
+  width: 100px !important;
+  height: 100px !important;
+  object-fit: contain !important;
+}
+
+.fileInput {
+  display: none !important;
+}
+
+.uploadButton,
+.changeButton {
+  color: var(--Primary-Color, #1e3a8a) !important;
+  border-color: var(--Primary-Color, #1e3a8a) !important;
+  text-transform: none !important;
+}
+
+.imageWarning {
+  margin-top: 8px !important;
+}
+
+.actions {
+  margin-top: 16px !important;
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.submitButton {
+  background-color: var(--Primary-Color, #1e3a8a) !important;
+  color: var(--Fourth-Color, #fff) !important;
+}
+
+.clearButton {
+  color: var(--Secondary-Color, #6b7280) !important;
+  border-color: var(--Secondary-Color, #6b7280) !important;
+}
+
+.cropperDialog {
+  background-color: var(--Primary-Color-Background, #fff) !important;
+}
+
+.cropperTitle {
+  background-color: var(--Primary-Color, #f7bd1e) !important;
+  color: var(--Fourth-Color, #ffffff) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.cropperActions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background-color: #fff !important;
+}
+
+.aspectSelect {
+  min-width: 120px !important;
+}
+
+.cropperContainer {
+  position: relative !important;
+  width: 100% !important;
+  height: 400px !important;
+}
+
+.zoomSlider {
+  margin-top: 16px !important;
+}
+
+.viewModal {
+  background-color: var(--Primary-Color-Background, #fff) !important;
+}
+
+.viewModalTitle {
+  background-color: var(--Primary-Color, #1e3a8a) !important;
+  color: var(--Fourth-Color, #fff) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.viewModalImage {
+  width: 100% !important;
+  max-height: 300px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  margin-bottom: 16px !important;
+}
+
+.viewModalContent {
+  margin-top: 16px !important;
+}

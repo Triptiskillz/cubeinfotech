@@ -1,0 +1,164 @@
+
+.blogList {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  background-color: var(--Primary-Color-Background, #fff) !important;
+  padding: 16px !important;
+  width: 320px !important;
+  height: calc(100vh - 32px) !important;
+  overflow-y: auto !important;
+}
+
+.header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+}
+
+.headerTitle {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--Primary-Color, #1e3a8a) !important;
+}
+
+.resetButton {
+  background-color: var(--Primary-Color, #1e3a8a) !important;
+  color: var(--Fourth-Color, #fff) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.resetButton:hover {
+  background-color: #2b4cb9 !important;
+}
+
+.resetButton:disabled {
+  background-color: #9ca3af !important;
+  color: #d1d5db !important;
+}
+
+.searchInput {
+  width: 100% !important;
+  background-color: #f9fafb !important;
+  border-radius: 8px !important;
+}
+
+.searchInputProps {
+  border-radius: 8px !important;
+  border-color: #d1d5db !important;
+}
+
+.searchLabel {
+  color: #6b7280 !important;
+}
+
+.loader {
+  display: flex !important;
+  justify-content: center !important;
+  margin: 24px 0 !important;
+}
+
+.loaderIcon {
+  color: var(--Primary-Color, #1e3a8a) !important;
+}
+
+.noBlogs {
+  color: #6b7280 !important;
+  margin-top: 16px !important;
+}
+
+.blogListItems {
+  max-height: calc(100vh - 180px) !important;
+  overflow: auto !important;
+  padding: 0 !important;
+}
+
+.blogItem {
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  background-color: #f9fafb !important;
+  margin-bottom: 4px !important;
+  transition: background-color 0.2s ease, border 0.2s ease !important;
+}
+
+.blogItem.selected {
+  background-color: #e0e7ff !important;
+  border: 2px solid var(--Primary-Color, #1e3a8a) !important;
+}
+
+.itemContent {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  gap: 12px !important;
+}
+
+.itemActions {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.editButton,
+.deleteButton {
+  background-color: var(--Primary-Color, #1e3a8a) !important;
+  color: var(--Fourth-Color, #fff) !important;
+  border-radius: 12px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+}
+
+.deleteButton {
+  background-color: var(--Secondary-Color, #6b7280) !important;
+}
+
+.itemDetails {
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: calc(320px - 24px - 80px - 12px) !important; /* Sidebar width - padding - actions width - gap */
+}
+
+.itemTitle {
+  font-weight: 500 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.itemStatusContainer {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.statusIndicator {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+}
+
+.itemStatus {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+}
+
+.pagination {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 16px !important;
+  margin-top: 16px !important;
+}
+
+.paginationControl {
+  color: var(--Primary-Color, #1e3a8a) !important;
+}
+
+.pageSizeSelect {
+  width: 100px !important;
+}
