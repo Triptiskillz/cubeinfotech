@@ -1,48 +1,65 @@
-// src/app/api/upload/route.js
-import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-import sanitize from 'sanitize-filename';
+import { NextResponse } from "next/server";
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
 
-/**
- * Upload an image to the server.
- * @param {Request} request - HTTP request object
- * @returns {NextResponse} JSON response with image URL or error
- */
 export async function POST(request) {
   try {
-    const formData = await request.formData();
-    const file = formData.get('file');
+    const data = await request.formData();
+    const file = data.get("file");
+
     if (!file) {
-      return NextResponse.json({ message: 'No file uploaded' }, { status: 400 });
+      return NextResponse.json({ error: "No file received." }, { status: 400 });
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-    if (file.size > maxSize) {
-      return NextResponse.json({ message: 'File size exceeds 5MB limit' }, { status: 400 });
+    // Validate file type
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Only JPG, PNG, and GIF are allowed." },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "File size exceeds 5MB limit." },
+        { status: 400 }
+      );
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    await fs.mkdir(uploadDir, { recursive: true });
+    // Create unique filename
+    const timestamp = Date.now();
+    const originalName = file.name.replace(/\s/g, "-");
+    const filename = `${timestamp}-${originalName}`;
 
-    const fileExtension = path.extname(file.name).toLowerCase();
-    if (!['.jpg', '.jpeg', '.png', '.gif'].includes(fileExtension)) {
-      return NextResponse.json({ message: 'Invalid file type. Only JPG, JPEG, PNG, GIF allowed.' }, { status: 400 });
+    // Ensure upload directory exists
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (error) {
+      console.log("Directory already exists or created");
     }
 
-    const sanitizedName = sanitize(file.name.replace(fileExtension, ''));
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const filename = `${sanitizedName}-${uniqueSuffix}${fileExtension}`;
-    const filePath = path.join(uploadDir, filename);
-    await fs.writeFile(filePath, buffer);
+    // Write file
+    const filepath = path.join(uploadDir, filename);
+    await writeFile(filepath, buffer);
 
+    // Return the public URL
     const imageUrl = `/uploads/${filename}`;
-    return NextResponse.json({ imageUrl }, { status: 201 });
+
+    return NextResponse.json({ 
+      imageUrl,
+      message: "Upload successful" 
+    });
   } catch (error) {
-    return NextResponse.json({ message: 'Failed to upload image', error: error.message }, { status: 500 });
+    console.error("Upload error:", error);
+    return NextResponse.json(
+      { error: `Failed to upload file: ${error.message}` },
+      { status: 500 }
+    );
   }
 }

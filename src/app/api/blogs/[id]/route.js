@@ -12,19 +12,23 @@ import { connectDB } from '@/lib/db';
 export async function PUT(request, { params }) {
   try {
     await connectDB();
-    const { id } = await params;
+    const { id } = params;
+
+    console.log('PUT /api/blogs/[id] - Updating blog with ID:', id);
 
     // Validate ID
     if (!mongoose.isValidObjectId(id)) {
+      console.error('PUT /api/blogs/[id] - Invalid blog ID:', id);
       return NextResponse.json({ message: 'Invalid blog ID' }, { status: 400 });
     }
 
     const data = await request.json();
     const { featuredImage } = data;
 
-    if (featuredImage && !/^\/uploads\/.+\.(jpg|jpeg|png|gif)$/.test(featuredImage)) {
+    if (featuredImage && !/^\/uploads\/.+\.(jpg|jpeg|png|gif|svg)$/i.test(featuredImage)) {
+      console.error('PUT /api/blogs/[id] - Invalid image path:', featuredImage);
       return NextResponse.json(
-        { message: 'Invalid image path. Must be in /Uploads/ and have a valid extension (jpg, jpeg, png, gif)' },
+        { message: 'Invalid image path. Must be in /uploads/ and have a valid extension (jpg, jpeg, png, gif, svg)' },
         { status: 400 }
       );
     }
@@ -39,12 +43,16 @@ export async function PUT(request, { params }) {
       isActive: data.isActive,
     };
 
+    console.log('PUT /api/blogs/[id] - Updating with fields:', allowedFields);
+    
     const blog = await Blog.findByIdAndUpdate(id, allowedFields, { new: true, runValidators: true }).lean();
 
     if (!blog) {
+      console.error('PUT /api/blogs/[id] - Blog not found for ID:', id);
       return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
     }
 
+    console.log('PUT /api/blogs/[id] - Blog updated successfully:', blog._id);
     return NextResponse.json({ message: 'Blog updated successfully', blog });
   } catch (error) {
     console.error('PUT /api/blogs/[id] - Error:', error.message, error.stack);
@@ -67,7 +75,7 @@ export async function PUT(request, { params }) {
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    const { id } = await params;
+    const { id } = params;
 
     if (!mongoose.isValidObjectId(id)) {
       return NextResponse.json({ message: 'Invalid blog ID' }, { status: 400 });

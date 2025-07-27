@@ -15,7 +15,7 @@ export async function POST(request) {
 
     // Validate featuredImage path
     const { featuredImage } = data;
-    if (!featuredImage || !/^\/uploads\/.+\.(jpg|jpeg|png|gif)$/.test(featuredImage)) {
+    if (!featuredImage || !/^\/uploads\/.+\.(jpg|jpeg|png|gif|svg)$/i.test(featuredImage)) {
       console.error('POST /api/blogs - Invalid featuredImage path:', featuredImage);
       return NextResponse.json(
         { message: 'Invalid image path. Must be in /Uploads/ and have a valid extension (jpg, jpeg, png, gif)' },
@@ -65,22 +65,30 @@ export async function GET(request) {
     const search = searchParams.get('search') || '';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
+    
+    console.log('GET /api/blogs - Params:', { search, page, limit });
 
-    const query = {
-      isDeleted: false,
-      $or: [
+    // Build query - get all non-deleted blogs
+    let query = { isDeleted: { $ne: true } };
+    
+    if (search) {
+      query.$or = [
         { title: { $regex: search, $options: 'i' } },
         { content: { $regex: search, $options: 'i' } },
-      ],
-    };
+      ];
+    }
 
+    console.log('GET /api/blogs - Query:', JSON.stringify(query));
+    
     const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-
+      
     const total = await Blog.countDocuments(query);
+    
+    console.log('GET /api/blogs - Found blogs:', blogs.length, 'Total:', total);
 
     return NextResponse.json({
       blogs,

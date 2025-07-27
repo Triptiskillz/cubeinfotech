@@ -7,12 +7,11 @@ import slugify from 'slugify';
  * @typedef {Object} BlogSchema
  */
 const blogSchema = new mongoose.Schema({
-  /** Blog title, required, 3-200 characters */
+  /** Blog title, required */
   title: {
     type: String,
     required: [true, 'Blog title is required'],
     trim: true,
-    minlength: [3, 'Title must be at least 3 characters'],
     maxlength: [200, 'Title cannot exceed 200 characters'],
   },
   /** Auto-generated slug from title, unique and lowercase */
@@ -26,15 +25,14 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Featured image is required'],
     validate: {
-      validator: (v) => /^\/uploads\/.+\.(jpg|jpeg|png|gif)$/.test(v),
-      message: 'Invalid image path. Must be in /uploads/ and have a valid extension (jpg, jpeg, png, gif).',
+      validator: (v) => /^\/uploads\/.+\.(jpg|jpeg|png|gif|svg)$/i.test(v),
+      message: 'Invalid image path. Must be in /uploads/ and have a valid extension (jpg, jpeg, png, gif, svg).',
     },
   },
-  /** Blog content, required, minimum 10 characters */
+  /** Blog content, required */
   content: {
     type: String,
     required: [true, 'Blog content is required'],
-    minlength: [10, 'Content must be at least 10 characters'],
   },
   /** Optional SEO meta title, max 70 characters */
   metaTitle: {

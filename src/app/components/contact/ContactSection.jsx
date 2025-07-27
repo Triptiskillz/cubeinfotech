@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import ThirdButton from "../comman/ThirdButton";
 import { useState } from "react";
+import { Snackbar, Alert } from "@mui/material";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -23,6 +24,12 @@ export default function ContactSection() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const validate = () => {
     const errs = {};
@@ -61,19 +68,42 @@ export default function ContactSection() {
       return;
     }
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    const result = await res.json();
-    if (res.ok) {
-      alert("Message sent successfully!");
-      setFormData({ name: "", email: "", phone: "", service: "" });
-    } else {
-      alert(result.message || "Something went wrong.");
+      const result = await res.json();
+      if (res.ok) {
+        setToast({
+          open: true,
+          message: "Message sent successfully!",
+          severity: "success",
+        });
+        setFormData({ name: "", email: "", phone: "", service: "" });
+      } else {
+        setToast({
+          open: true,
+          message: result.message || "Something went wrong.",
+          severity: "error",
+        });
+      }
+    } catch (error) {
+      setToast({
+        open: true,
+        message: "Network error. Please try again.",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleCloseToast = () => {
+    setToast({ ...toast, open: false });
   };
 
 
@@ -101,7 +131,7 @@ export default function ContactSection() {
                 className="w-full border border-gray-200 mt-2 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
               />
               {errors.name && (
-                <p className="text-red-600 text-sm mt-1">{errors.name}</p>
+                <small className="text-red-500 text-sm mt-1">{errors.name}</small>
               )}
             </div>
 
@@ -116,7 +146,7 @@ export default function ContactSection() {
                 className="w-full border border-gray-200 mt-2 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
               />
               {errors.email && (
-                <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+                <small className="text-red-500 text-sm mt-1">{errors.email}</small>
               )}
             </div>
 
@@ -131,7 +161,7 @@ export default function ContactSection() {
                 className="w-full border border-gray-200 mt-2 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
               />
               {errors.phone && (
-                <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+                <small className="text-red-500 text-sm mt-1">{errors.phone}</small>
               )}
             </div>
 
@@ -162,12 +192,12 @@ export default function ContactSection() {
                 </svg>
               </div>
               {errors.service && (
-                <p className="text-red-600 text-sm mt-1">{errors.service}</p>
+                <small className="text-red-500 text-sm mt-1">{errors.service}</small>
               )}
             </div>
 
             {/* Submit Button */}
-            <ThirdButton title="SEND" />
+            <ThirdButton title={loading ? "SENDING..." : "SEND"} loading={loading} />
           </form>
 
           {/* Social Icons */}
@@ -227,6 +257,21 @@ export default function ContactSection() {
           />
         </div>
       </div>
+
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={6000}
+        onClose={handleCloseToast}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseToast}
+          severity={toast.severity}
+          sx={{ width: "100%" }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
     </section>
   );
 }

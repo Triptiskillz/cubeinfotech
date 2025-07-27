@@ -1,0 +1,6 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+      <rect width="800" height="450" fill="#1572b6"/>
+      <text x="400" y="160" font-family="Arial, sans-serif" font-size="56" fill="#fff" text-anchor="middle" font-weight="bold">CSS Grid</text>
+      <text x="400" y="240" font-family="Arial, sans-serif" font-size="40" fill="#fff" text-anchor="middle">vs</text>
+      <text x="400" y="320" font-family="Arial, sans-serif" font-size="56" fill="#fff" text-anchor="middle" font-weight="bold">Flexbox</text>
+    </svg>

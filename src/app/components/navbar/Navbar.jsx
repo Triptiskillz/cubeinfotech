@@ -28,24 +28,7 @@ export default function Navbar() {
 
   if (isAdmin) {
     return (
-      <nav className="bg-black text-white flex justify-between items-center p-4">
-        <div className="font-bold text-lg">Admin Panel</div>
-        <div className="flex gap-4 items-center">
-          <Link href="/admin">Dashboard</Link>
-          <Link href="/admin/blogs">Manage Blogs</Link>
-          {token && (
-            <button
-              onClick={() => {
-                Cookies.remove('token');
-                router.push('/login');
-              }}
-              className="bg-red-600 px-4 py-1 rounded text-white"
-            >
-              Logout
-            </button>
-          )}
-        </div>
-      </nav>
+    <></>
     );
   }
 
