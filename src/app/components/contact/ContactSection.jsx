@@ -1,3 +1,5 @@
+"use client";
+
 import {
   FaPhoneAlt,
   FaMapMarkerAlt,
@@ -10,8 +12,71 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 import ThirdButton from "../comman/ThirdButton";
+import { useState } from "react";
 
 export default function ContactSection() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const errs = {};
+
+    if (!formData.name.trim()) errs.name = "Name is required.";
+    if (!formData.email.trim()) {
+      errs.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errs.email = "Invalid email format.";
+    }
+
+    if (!formData.phone.trim()) {
+      errs.phone = "Phone number is required.";
+    } else if (!/^[0-9+\-\s()]{7,15}$/.test(formData.phone)) {
+      errs.phone = "Invalid phone number.";
+    }
+
+    if (!formData.service) errs.service = "Please select a service.";
+
+    return errs;
+  };
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert("Message sent successfully!");
+      setFormData({ name: "", email: "", phone: "", service: "" });
+    } else {
+      alert(result.message || "Something went wrong.");
+    }
+  };
+
+
   return (
     <section className="bg-white py-20 px-4 md:px-10 lg:px-24">
       <h2 className="text-center text-3xl md:text-4xl font-bold mb-14 text-gray-800">
@@ -24,43 +89,65 @@ export default function ContactSection() {
           <h3 className="text-xl font-semibold mb-6 text-gray-700">
             Help us Understand Your Requirement
           </h3>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Name */}
-            <input
-              type="text"
-              placeholder="Name *"
-              className="w-full border border-gray-200 mt-4 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
-            />
+            <div>
+              <input
+                type="text"
+                name="name"
+                placeholder="Name *"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full border border-gray-200 mt-2 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
+              />
+              {errors.name && (
+                <p className="text-red-600 text-sm mt-1">{errors.name}</p>
+              )}
+            </div>
 
             {/* Email */}
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full border border-gray-200 mt-4 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
-            />
+            <div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email *"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border border-gray-200 mt-2 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
+              />
+              {errors.email && (
+                <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
 
             {/* Phone */}
-            <input
-              type="tel"
-              placeholder="Phone number *"
-              className="w-full border border-gray-200 mt-4 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
-            />
+            <div>
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Phone number *"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full border border-gray-200 mt-2 px-4 py-4 text-sm text-gray-700 focus:outline-none focus:border-blue-300"
+              />
+              {errors.phone && (
+                <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+              )}
+            </div>
 
-            {/* Service Select */}
-            <div className="relative w-full mt-4">
+            {/* Service */}
+            <div className="relative w-full mt-2">
               <select
+                name="service"
+                value={formData.service}
+                onChange={handleChange}
                 className="w-full border border-gray-200 px-4 py-4 text-sm text-gray-700 bg-white rounded-none appearance-none focus:outline-none focus:border-blue-300"
-                defaultValue=""
               >
-                <option disabled value="">
-                  Select a service
-                </option>
+                <option value="">Select a service</option>
                 <option>Web Development</option>
                 <option>Mobile Development</option>
                 <option>SEO</option>
               </select>
-
-              {/* Custom Arrow */}
               <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
                 <svg
                   className="w-4 h-4"
@@ -74,6 +161,9 @@ export default function ContactSection() {
                   />
                 </svg>
               </div>
+              {errors.service && (
+                <p className="text-red-600 text-sm mt-1">{errors.service}</p>
+              )}
             </div>
 
             {/* Submit Button */}
